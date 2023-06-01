@@ -25,7 +25,7 @@ LINUX_SITE = https://cdn.kernel.org/pub/linux/kernel
 LINUX_HEADERS_SITE = http://ftp.barfooze.de/pub/sabotage/tarballs/
 
 DL_CMD = wget -c -O
-SHA1_CMD = sha1sum -c
+SHA256_CMD = sha256sum -c
 
 COWPATCH = $(CURDIR)/cowpatch.sh
 
@@ -58,19 +58,19 @@ distclean: clean
 
 ifeq ($(SOURCES),sources)
 
-$(patsubst hashes/%.sha1,$(SOURCES)/%,$(wildcard hashes/gmp*)): SITE = $(GMP_SITE)
-$(patsubst hashes/%.sha1,$(SOURCES)/%,$(wildcard hashes/mpc*)): SITE = $(MPC_SITE)
-$(patsubst hashes/%.sha1,$(SOURCES)/%,$(wildcard hashes/mpfr*)): SITE = $(MPFR_SITE)
-$(patsubst hashes/%.sha1,$(SOURCES)/%,$(wildcard hashes/isl*)): SITE = $(ISL_SITE)
-$(patsubst hashes/%.sha1,$(SOURCES)/%,$(wildcard hashes/binutils*)): SITE = $(BINUTILS_SITE)
-$(patsubst hashes/%.sha1,$(SOURCES)/%,$(wildcard hashes/gcc*)): SITE = $(GCC_SITE)/$(basename $(basename $(notdir $@)))
-$(patsubst hashes/%.sha1,$(SOURCES)/%,$(wildcard hashes/musl*)): SITE = $(MUSL_SITE)
-$(patsubst hashes/%.sha1,$(SOURCES)/%,$(wildcard hashes/linux-6*)): SITE = $(LINUX_SITE)/v6.x
-$(patsubst hashes/%.sha1,$(SOURCES)/%,$(wildcard hashes/linux-5*)): SITE = $(LINUX_SITE)/v5.x
-$(patsubst hashes/%.sha1,$(SOURCES)/%,$(wildcard hashes/linux-4*)): SITE = $(LINUX_SITE)/v4.x
-$(patsubst hashes/%.sha1,$(SOURCES)/%,$(wildcard hashes/linux-3*)): SITE = $(LINUX_SITE)/v3.x
-$(patsubst hashes/%.sha1,$(SOURCES)/%,$(wildcard hashes/linux-2.6*)): SITE = $(LINUX_SITE)/v2.6
-$(patsubst hashes/%.sha1,$(SOURCES)/%,$(wildcard hashes/linux-headers-*)): SITE = $(LINUX_HEADERS_SITE)
+$(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/gmp*)): SITE = $(GMP_SITE)
+$(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/mpc*)): SITE = $(MPC_SITE)
+$(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/mpfr*)): SITE = $(MPFR_SITE)
+$(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/isl*)): SITE = $(ISL_SITE)
+$(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/binutils*)): SITE = $(BINUTILS_SITE)
+$(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/gcc*)): SITE = $(GCC_SITE)/$(basename $(basename $(notdir $@)))
+$(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/musl*)): SITE = $(MUSL_SITE)
+$(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/linux-6*)): SITE = $(LINUX_SITE)/v6.x
+$(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/linux-5*)): SITE = $(LINUX_SITE)/v5.x
+$(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/linux-4*)): SITE = $(LINUX_SITE)/v4.x
+$(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/linux-3*)): SITE = $(LINUX_SITE)/v3.x
+$(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/linux-2.6*)): SITE = $(LINUX_SITE)/v2.6
+$(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/linux-headers-*)): SITE = $(LINUX_HEADERS_SITE)
 
 $(SOURCES):
 	mkdir -p $@
@@ -79,15 +79,15 @@ $(SOURCES)/config.sub: | $(SOURCES)
 	mkdir -p $@.tmp
 	cd $@.tmp && $(DL_CMD) $(notdir $@) "http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.sub;hb=$(CONFIG_SUB_REV)"
 	cd $@.tmp && touch $(notdir $@)
-	cd $@.tmp && $(SHA1_CMD) $(CURDIR)/hashes/$(notdir $@).$(CONFIG_SUB_REV).sha1
+	cd $@.tmp && $(SHA256_CMD) $(CURDIR)/hashes/$(notdir $@).$(CONFIG_SUB_REV).sha256
 	mv $@.tmp/$(notdir $@) $@
 	rm -rf $@.tmp
 
-$(SOURCES)/%: hashes/%.sha1 | $(SOURCES)
+$(SOURCES)/%: hashes/%.sha256 | $(SOURCES)
 	mkdir -p $@.tmp
 	cd $@.tmp && $(DL_CMD) $(notdir $@) $(SITE)/$(notdir $@)
 	cd $@.tmp && touch $(notdir $@)
-	cd $@.tmp && $(SHA1_CMD) $(CURDIR)/hashes/$(notdir $@).sha1
+	cd $@.tmp && $(SHA256_CMD) $(CURDIR)/hashes/$(notdir $@).sha256
 	mv $@.tmp/$(notdir $@) $@
 	rm -rf $@.tmp
 
