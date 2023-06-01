@@ -126,26 +126,6 @@ users. It's not intended to be something high-maintenance or to divert
 development effort away from musl itself.
 
 
-Patches included
-----------------
-
-In addition to canonical musl support patches for GCC,
-musl-cross-make's patch set provides:
-
-- Static-linked PIE support
-- Addition of `--enable-default-pie`
-- Fixes for SH-specific bugs and bitrot in GCC
-- Support for J2 Core CPU target in GCC & binutils
-- SH/FDPIC ABI support
-
-Most of these patches are integrated in gcc trunk/binutils master.
-They should also be usable with Gregor's original musl-cross or other
-build systems, if desired.
-
-Some functionality (SH/FDPIC, and support for J2 specific features) is
-presently only available with gcc 5.2.0 and later, and binutils 2.25.1
-and later.
-
 License
 -------
 
