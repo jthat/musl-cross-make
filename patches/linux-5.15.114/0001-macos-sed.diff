@@ -1,6 +1,6 @@
-diff -ur linux-5.15.68.orig/scripts/headers_install.sh linux-5.15.68.tmp/scripts/headers_install.sh
---- linux-5.15.68.orig/scripts/headers_install.sh	2022-09-15 11:30:08
-+++ linux-5.15.68.tmp/scripts/headers_install.sh	2022-09-22 17:58:11
+diff -ur linux-5.15.114.orig/scripts/headers_install.sh linux-5.15.114/scripts/headers_install.sh
+--- linux-5.15.114.orig/scripts/headers_install.sh	2023-05-30 22:55:33.000000000 +1000
++++ linux-5.15.114/scripts/headers_install.sh	2023-06-01 23:50:09.467976139 +1000
 @@ -24,7 +24,7 @@
  trap 'rm -f $OUTFILE $TMPFILE' EXIT
  

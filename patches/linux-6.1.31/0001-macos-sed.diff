@@ -1,6 +1,6 @@
-diff --color -u -r linux-6.1.29.orig/scripts/headers_install.sh linux-6.1.29.tmp/scripts/headers_install.sh
---- linux-6.1.29.orig/scripts/headers_install.sh	2023-05-17 19:54:00.000000000 +1000
-+++ linux-6.1.29.tmp/scripts/headers_install.sh	2023-05-22 23:25:37.897840447 +1000
+diff -ur linux-6.1.31.orig/scripts/headers_install.sh linux-6.1.31/scripts/headers_install.sh
+--- linux-6.1.31.orig/scripts/headers_install.sh	2023-05-30 23:03:33.000000000 +1000
++++ linux-6.1.31/scripts/headers_install.sh	2023-06-01 23:51:15.505332584 +1000
 @@ -24,7 +24,7 @@
  trap 'rm -f $OUTFILE $TMPFILE' EXIT
  

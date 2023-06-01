@@ -1,6 +1,7 @@
---- linux-4.19.90.orig/Makefile	2019-12-17 14:36:04.000000000 -0500
-+++ linux-4.19.90/Makefile	2020-01-30 22:06:04.216550425 -0500
-@@ -1173,7 +1173,7 @@
+diff -ur linux-4.19.284.orig/Makefile linux-4.19.284/Makefile
+--- linux-4.19.284.orig/Makefile	2023-05-30 21:42:15.000000000 +1000
++++ linux-4.19.284/Makefile	2023-06-01 23:48:53.745728965 +1000
+@@ -1202,7 +1202,7 @@
  archscripts:
  
  PHONY += __headers
