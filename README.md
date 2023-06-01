@@ -31,8 +31,8 @@ Usage
 The build system can be configured by providing a `config.mak` file in
 the top-level directory. The only mandatory variable is `TARGET`, which
 should contain a gcc target tuple (such as `i486-linux-musl`), but many
-more options are available. See the provided `config.mak.dist` and
-`presets/*` for examples.
+more options are available. See the provided `config.mak.dist` for an
+example.
 
 To compile, run `make`. To install to `$(OUTPUT)`, run `make install`.
 
