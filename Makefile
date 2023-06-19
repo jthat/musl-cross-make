@@ -1,14 +1,7 @@
 
 SOURCES = sources
 
-CONFIG_SUB_REV = 63acb96f9247
-BINUTILS_VER = 2.40
-GCC_VER = 13.1.0
-MUSL_VER = 1.2.4
-GMP_VER = 6.2.1
-MPC_VER = 1.3.1
-MPFR_VER = 4.2.0
-LINUX_VER = 4.19.284
+COMPILER = gcc
 
 GNU_SITE = https://ftpmirror.gnu.org/gnu
 GCC_SITE = $(GNU_SITE)/gcc
@@ -17,6 +10,7 @@ GMP_SITE = $(GNU_SITE)/gmp
 MPC_SITE = $(GNU_SITE)/mpc
 MPFR_SITE = $(GNU_SITE)/mpfr
 ISL_SITE = https://downloads.sourceforge.net/project/libisl/
+LLVM_SITE = https://github.com/llvm/llvm-project/releases/download
 
 MUSL_SITE = https://musl.libc.org/releases
 MUSL_REPO = git://git.musl-libc.org/musl
@@ -30,24 +24,47 @@ SHA256_CMD = sha256sum -c
 COWPATCH = $(CURDIR)/cowpatch.sh
 
 HOST = $(if $(NATIVE),$(TARGET))
-BUILD_DIR = build/$(if $(HOST),$(HOST),local)/$(TARGET)
+BUILD_DIR = build-$(COMPILER)/$(if $(HOST),$(HOST),local)/$(TARGET)
 OUTPUT = $(CURDIR)/output$(if $(HOST),-$(HOST))
 
-REL_TOP = ../../..
+REL_TOP = ../..$(if $(TARGET),/..)
 
 -include config.mak
 
-SRC_DIRS = gcc-$(GCC_VER) binutils-$(BINUTILS_VER) musl-$(MUSL_VER) \
+MUSL_VER ?= 1.2.4
+LINUX_VER ?= 4.19.284
+CONFIG_SUB_REV ?= 63acb96f9247
+
+ifeq ($(COMPILER),gcc)
+
+BINUTILS_VER ?= 2.40
+GCC_VER ?= 13.1.0
+GMP_VER ?= 6.2.1
+MPC_VER ?= 1.3.1
+MPFR_VER ?= 4.2.0
+
+endif
+
+ifeq ($(COMPILER),clang)
+
+LLVM_VER ?= 13.0.0
+
+endif
+
+SRC_DIRS = musl-$(MUSL_VER) \
+	$(if $(GCC_VER),gcc-$(GCC_VER)) \
+	$(if $(BINUTILS_VER),binutils-$(BINUTILS_VER)) \
 	$(if $(GMP_VER),gmp-$(GMP_VER)) \
 	$(if $(MPC_VER),mpc-$(MPC_VER)) \
 	$(if $(MPFR_VER),mpfr-$(MPFR_VER)) \
 	$(if $(ISL_VER),isl-$(ISL_VER)) \
-	$(if $(LINUX_VER),linux-$(LINUX_VER))
+	$(if $(LINUX_VER),linux-$(LINUX_VER)) \
+	$(if $(LLVM_VER),llvm-project-$(LLVM_VER).src)
 
 all:
 
 clean:
-	rm -rf gcc-* binutils-* musl-* gmp-* mpc-* mpfr-* isl-* build build-* linux-*
+	rm -rf gcc-* binutils-* musl-* gmp-* mpc-* mpfr-* isl-* build build-* linux-* llvm-project-*
 
 distclean: clean
 	rm -rf sources
@@ -71,6 +88,7 @@ $(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/linux-4*)): SITE = $(L
 $(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/linux-3*)): SITE = $(LINUX_SITE)/v3.x
 $(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/linux-2.6*)): SITE = $(LINUX_SITE)/v2.6
 $(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/linux-headers-*)): SITE = $(LINUX_HEADERS_SITE)
+$(patsubst hashes/%.sha256,$(SOURCES)/%,$(wildcard hashes/llvm-project-*)): SITE = $(LLVM_SITE)/llvmorg-$(patsubst llvm-project-%.src,%,$(basename $(basename $(notdir $@))))
 
 $(SOURCES):
 	mkdir -p $@
@@ -151,10 +169,10 @@ extract_all: | $(SRC_DIRS)
 
 # Rules for building.
 
-ifeq ($(TARGET),)
+ifeq ($(COMPILER)$(TARGET),gcc)
 
 all:
-	@echo TARGET must be set via config.mak or command line.
+	@echo TARGET must be set for gcc build via config.mak or command line.
 	@exit 1
 
 else
@@ -163,20 +181,22 @@ $(BUILD_DIR):
 	mkdir -p $@
 
 $(BUILD_DIR)/Makefile: | $(BUILD_DIR)
-	ln -sf $(REL_TOP)/litecross/Makefile $@
+	ln -sf $(REL_TOP)/litecross/Makefile.$(COMPILER) $@
 
 $(BUILD_DIR)/config.mak: | $(BUILD_DIR)
 	printf >$@ '%s\n' \
-	"TARGET = $(TARGET)" \
+	$(if $(TARGET),"TARGET = $(TARGET)") \
 	"HOST = $(HOST)" \
 	"MUSL_SRCDIR = $(REL_TOP)/musl-$(MUSL_VER)" \
-	"GCC_SRCDIR = $(REL_TOP)/gcc-$(GCC_VER)" \
-	"BINUTILS_SRCDIR = $(REL_TOP)/binutils-$(BINUTILS_VER)" \
+	$(if $(GCC_VER),"GCC_SRCDIR = $(REL_TOP)/gcc-$(GCC_VER)") \
+	$(if $(BINUTILS_VER),"BINUTILS_SRCDIR = $(REL_TOP)/binutils-$(BINUTILS_VER)") \
 	$(if $(GMP_VER),"GMP_SRCDIR = $(REL_TOP)/gmp-$(GMP_VER)") \
 	$(if $(MPC_VER),"MPC_SRCDIR = $(REL_TOP)/mpc-$(MPC_VER)") \
 	$(if $(MPFR_VER),"MPFR_SRCDIR = $(REL_TOP)/mpfr-$(MPFR_VER)") \
 	$(if $(ISL_VER),"ISL_SRCDIR = $(REL_TOP)/isl-$(ISL_VER)") \
 	$(if $(LINUX_VER),"LINUX_SRCDIR = $(REL_TOP)/linux-$(LINUX_VER)") \
+	$(if $(LLVM_VER),"LLVM_SRCDIR = $(REL_TOP)/llvm-project-$(LLVM_VER).src") \
+	$(if $(LLVM_VER),"LLVM_VER = $(LLVM_VER)") \
 	"-include $(REL_TOP)/config.mak"
 
 all: | $(SRC_DIRS) $(BUILD_DIR) $(BUILD_DIR)/Makefile $(BUILD_DIR)/config.mak
