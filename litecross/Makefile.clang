@@ -40,8 +40,28 @@ define normalise_targets
 $(foreach t,$(1),$(call normalise_target,$(t)))
 endef
 
+llvm_target_map = \
+	aarch64%:AArch64 \
+	arm%:ARM \
+	i%86:X86 \
+	mips%:Mips \
+	powerpc%:PowerPC \
+	riscv%:RISCV \
+	s390%:SystemZ \
+	x86_64:X86 \
 
-# TODO: determine LLVM_TARGETS_TO_BUILD from TARGETS?
+define llvm_target
+$(or
+  $(filter-out !%,
+    $(foreach m,$(llvm_target_map),
+      $(patsubst !$(word 1,$(subst :, ,$(m))),$(word 2,$(subst :, ,$(m))),!$(call fn_target_arch,$(1))))),
+  $(error Cannot determine LLVM target architecture for target $(1)))
+endef
+
+define llvm_targets
+$(sort $(foreach t,$(1),$(call llvm_target,$(t))))
+endef
+
 FULL_LLVM_CONFIG = $(LLVM_CONFIG) \
 	-Wno-dev \
 	-DCLANG_DEFAULT_CXX_STDLIB=libc++ \
@@ -58,7 +78,7 @@ FULL_LLVM_CONFIG = $(LLVM_CONFIG) \
 	-DLLVM_ENABLE_RUNTIMES='compiler-rt;libcxx;libcxxabi;libunwind' \
 	-DLLVM_INSTALL_TOOLCHAIN_ONLY=ON \
 	-DLLVM_RUNTIME_TARGETS='$(subst $(subst ,, ),;,$(call normalise_targets,$(TARGETS)))' \
-	-DLLVM_TARGETS_TO_BUILD='AArch64;ARM;Mips;PowerPC;RISCV;X86' \
+	-DLLVM_TARGETS_TO_BUILD='$(subst $(subst ,, ),;,$(call llvm_targets,$(TARGETS)))' \
 	$(foreach t,$(TARGETS),-DBUILTINS_$(call normalise_target,$(t))_CMAKE_SYSROOT=$(CURDIR)/obj_sysroot/$(t)) \
 	$(foreach t,$(TARGETS),-DBUILTINS_$(call normalise_target,$(t))_CMAKE_CXX_FLAGS='$(TARGET_CONFIG_$(t))') \
 	$(foreach t,$(TARGETS),-DBUILTINS_$(call normalise_target,$(t))_CMAKE_C_FLAGS='$(TARGET_CONFIG_$(t))') \
