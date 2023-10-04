@@ -140,11 +140,12 @@ obj_llvm/.lc_built_1: | obj_llvm/.lc_configured
 	touch $@
 
 obj_musl/%/.lc_configured: | obj_musl/%/ src_musl obj_llvm/.lc_built_1
+	# llvm 16+ has only the major version number in the LIBCC path
 	cd obj_musl/$* && ../../src_musl/configure \
 		--prefix= \
 		--target=$* \
 		--disable-wrapper \
-		LIBCC=../../obj_llvm/lib/clang/$(LLVM_VER)/lib/$(call normalise_target,$*)/libclang_rt.builtins.a \
+		LIBCC=../../obj_llvm/lib/clang/$(intcmp $(call fn_major_version,$(LLVM_VER)),16,$(LLVM_VER),$(call fn_major_version,$(LLVM_VER)))/lib/$(call normalise_target,$*)/libclang_rt.builtins.a \
 		CC="../../obj_llvm/bin/clang --target=$* $(TARGET_CONFIG_$*)" \
 		$(MUSL_CONFIG) $(MUSL_CONFIG_$*)
 	touch $@
@@ -221,5 +222,6 @@ LINUX_ARCH_LIST := $(sort $(notdir $(wildcard $(LINUX_SRCDIR)/arch/*)))
 fn_target_arch = $(firstword $(subst -, ,$(1)))
 fn_target_arch_mangled = $(patsubst i%86,x86,$(patsubst aarch64%,arm64%,$(call fn_target_arch,$(1))))
 fn_linux_arch = $(lastword $(foreach a,$(LINUX_ARCH_LIST),$(if $(filter $(a)%,$(call fn_target_arch_mangled,$(1))),$(a))))
+fn_major_version = $(firstword $(subst ., ,$(1)))
 
 .SECONDARY:
