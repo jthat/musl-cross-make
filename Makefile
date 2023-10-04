@@ -47,7 +47,7 @@ endif
 
 ifeq ($(COMPILER),clang)
 
-LLVM_VER ?= 16.0.6
+LLVM_VER ?= 17.0.2
 
 endif
 
