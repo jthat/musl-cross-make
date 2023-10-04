@@ -1,7 +1,8 @@
-diff -ur linux-4.19.284.orig/Makefile linux-4.19.284/Makefile
---- linux-4.19.284.orig/Makefile	2023-05-30 21:42:15.000000000 +1000
-+++ linux-4.19.284/Makefile	2023-06-01 23:48:53.745728965 +1000
-@@ -1202,7 +1202,7 @@
+Index: b/Makefile
+===================================================================
+--- a/Makefile
++++ b/Makefile
+@@ -1206,7 +1206,7 @@ PHONY += archscripts
  archscripts:
  
  PHONY += __headers

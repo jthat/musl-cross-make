@@ -1,7 +1,8 @@
-diff -ur linux-5.15.114.orig/Makefile linux-5.15.114/Makefile
---- linux-5.15.114.orig/Makefile	2023-05-30 22:55:33.000000000 +1000
-+++ linux-5.15.114/Makefile	2023-06-01 23:50:09.469394670 +1000
-@@ -1344,7 +1344,7 @@
+Index: b/Makefile
+===================================================================
+--- a/Makefile
++++ b/Makefile
+@@ -1344,7 +1344,7 @@ PHONY += archheaders archscripts
  hdr-inst := -f $(srctree)/scripts/Makefile.headersinst obj
  
  PHONY += headers

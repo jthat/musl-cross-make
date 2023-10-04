@@ -1,6 +1,7 @@
-diff -ur linux-4.19.284.orig/include/uapi/sound/asound.h linux-4.19.284/include/uapi/sound/asound.h
---- linux-4.19.284.orig/include/uapi/sound/asound.h	2023-05-30 21:42:15.000000000 +1000
-+++ linux-4.19.284/include/uapi/sound/asound.h	2023-06-01 23:48:53.744345512 +1000
+Index: b/include/uapi/sound/asound.h
+===================================================================
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
 @@ -34,6 +34,8 @@
  #include <stdlib.h>
  #endif
@@ -10,7 +11,7 @@ diff -ur linux-4.19.284.orig/include/uapi/sound/asound.h linux-4.19.284/include/
  /*
   *  protocol version
   */
-@@ -153,7 +155,7 @@
+@@ -153,7 +155,7 @@ struct snd_hwdep_dsp_image {
   *                                                                           *
   *****************************************************************************/
  
@@ -19,7 +20,7 @@ diff -ur linux-4.19.284.orig/include/uapi/sound/asound.h linux-4.19.284/include/
  
  typedef unsigned long snd_pcm_uframes_t;
  typedef signed long snd_pcm_sframes_t;
-@@ -300,7 +302,9 @@
+@@ -300,7 +302,9 @@ typedef int __bitwise snd_pcm_subformat_
  #define SNDRV_PCM_INFO_DRAIN_TRIGGER	0x40000000		/* internal kernel flag - trigger in drain */
  #define SNDRV_PCM_INFO_FIFO_IN_FRAMES	0x80000000	/* internal kernel flag - FIFO size is in frames */
  
@@ -30,7 +31,7 @@ diff -ur linux-4.19.284.orig/include/uapi/sound/asound.h linux-4.19.284/include/
  
  typedef int __bitwise snd_pcm_state_t;
  #define	SNDRV_PCM_STATE_OPEN		((__force snd_pcm_state_t) 0) /* stream is open */
-@@ -316,8 +320,17 @@
+@@ -316,8 +320,17 @@ typedef int __bitwise snd_pcm_state_t;
  
  enum {
  	SNDRV_PCM_MMAP_OFFSET_DATA = 0x00000000,
@@ -50,7 +51,7 @@ diff -ur linux-4.19.284.orig/include/uapi/sound/asound.h linux-4.19.284/include/
  };
  
  union snd_pcm_sync_id {
-@@ -455,8 +468,13 @@
+@@ -455,8 +468,13 @@ enum {
  	SNDRV_PCM_AUDIO_TSTAMP_TYPE_LAST = SNDRV_PCM_AUDIO_TSTAMP_TYPE_LINK_SYNCHRONIZED
  };
  
@@ -64,7 +65,7 @@ diff -ur linux-4.19.284.orig/include/uapi/sound/asound.h linux-4.19.284/include/
  	struct timespec trigger_tstamp;	/* time when stream was started/stopped/paused */
  	struct timespec tstamp;		/* reference timestamp */
  	snd_pcm_uframes_t appl_ptr;	/* appl ptr */
-@@ -472,17 +490,48 @@
+@@ -472,17 +490,48 @@ struct snd_pcm_status {
  	__u32 audio_tstamp_accuracy;	/* in ns units, only valid if indicated in audio_tstamp_data */
  	unsigned char reserved[52-2*sizeof(struct timespec)]; /* must be filled with zero */
  };
@@ -117,7 +118,7 @@ diff -ur linux-4.19.284.orig/include/uapi/sound/asound.h linux-4.19.284/include/
  	snd_pcm_uframes_t appl_ptr;	/* RW: appl ptr (0...boundary-1) */
  	snd_pcm_uframes_t avail_min;	/* RW: min available frames for wakeup */
  };
-@@ -491,14 +540,59 @@
+@@ -491,14 +540,59 @@ struct snd_pcm_mmap_control {
  #define SNDRV_PCM_SYNC_PTR_APPL		(1<<1)	/* get appl_ptr from driver (r/w op) */
  #define SNDRV_PCM_SYNC_PTR_AVAIL_MIN	(1<<2)	/* get avail_min from driver */
  
@@ -180,7 +181,7 @@ diff -ur linux-4.19.284.orig/include/uapi/sound/asound.h linux-4.19.284/include/
  		unsigned char reserved[64];
  	} c;
  };
-@@ -583,6 +677,8 @@
+@@ -583,6 +677,8 @@ enum {
  #define SNDRV_PCM_IOCTL_STATUS		_IOR('A', 0x20, struct snd_pcm_status)
  #define SNDRV_PCM_IOCTL_DELAY		_IOR('A', 0x21, snd_pcm_sframes_t)
  #define SNDRV_PCM_IOCTL_HWSYNC		_IO('A', 0x22)
@@ -189,7 +190,7 @@ diff -ur linux-4.19.284.orig/include/uapi/sound/asound.h linux-4.19.284/include/
  #define SNDRV_PCM_IOCTL_SYNC_PTR	_IOWR('A', 0x23, struct snd_pcm_sync_ptr)
  #define SNDRV_PCM_IOCTL_STATUS_EXT	_IOWR('A', 0x24, struct snd_pcm_status)
  #define SNDRV_PCM_IOCTL_CHANNEL_INFO	_IOR('A', 0x32, struct snd_pcm_channel_info)
-@@ -613,7 +709,7 @@
+@@ -613,7 +709,7 @@ enum {
   *  Raw MIDI section - /dev/snd/midi??
   */
  
@@ -198,7 +199,7 @@ diff -ur linux-4.19.284.orig/include/uapi/sound/asound.h linux-4.19.284/include/
  
  enum {
  	SNDRV_RAWMIDI_STREAM_OUTPUT = 0,
-@@ -647,13 +743,16 @@
+@@ -647,13 +743,16 @@ struct snd_rawmidi_params {
  	unsigned char reserved[16];	/* reserved for future use */
  };
  
@@ -215,7 +216,7 @@ diff -ur linux-4.19.284.orig/include/uapi/sound/asound.h linux-4.19.284/include/
  
  #define SNDRV_RAWMIDI_IOCTL_PVERSION	_IOR('W', 0x00, int)
  #define SNDRV_RAWMIDI_IOCTL_INFO	_IOR('W', 0x01, struct snd_rawmidi_info)
-@@ -666,7 +765,7 @@
+@@ -666,7 +765,7 @@ struct snd_rawmidi_status {
   *  Timer section - /dev/snd/timer
   */
  
@@ -224,7 +225,7 @@ diff -ur linux-4.19.284.orig/include/uapi/sound/asound.h linux-4.19.284/include/
  
  enum {
  	SNDRV_TIMER_CLASS_NONE = -1,
-@@ -760,6 +859,7 @@
+@@ -760,6 +859,7 @@ struct snd_timer_params {
  	unsigned char reserved[60];	/* reserved */
  };
  
@@ -232,7 +233,7 @@ diff -ur linux-4.19.284.orig/include/uapi/sound/asound.h linux-4.19.284/include/
  struct snd_timer_status {
  	struct timespec tstamp;		/* Timestamp - last update */
  	unsigned int resolution;	/* current period resolution in ns */
-@@ -768,10 +868,11 @@
+@@ -768,10 +868,11 @@ struct snd_timer_status {
  	unsigned int queue;		/* used queue size */
  	unsigned char reserved[64];	/* reserved */
  };
@@ -245,7 +246,7 @@ diff -ur linux-4.19.284.orig/include/uapi/sound/asound.h linux-4.19.284/include/
  #define SNDRV_TIMER_IOCTL_GINFO		_IOWR('T', 0x03, struct snd_timer_ginfo)
  #define SNDRV_TIMER_IOCTL_GPARAMS	_IOW('T', 0x04, struct snd_timer_gparams)
  #define SNDRV_TIMER_IOCTL_GSTATUS	_IOWR('T', 0x05, struct snd_timer_gstatus)
-@@ -784,6 +885,15 @@
+@@ -784,6 +885,15 @@ struct snd_timer_status {
  #define SNDRV_TIMER_IOCTL_STOP		_IO('T', 0xa1)
  #define SNDRV_TIMER_IOCTL_CONTINUE	_IO('T', 0xa2)
  #define SNDRV_TIMER_IOCTL_PAUSE		_IO('T', 0xa3)
@@ -261,7 +262,7 @@ diff -ur linux-4.19.284.orig/include/uapi/sound/asound.h linux-4.19.284/include/
  
  struct snd_timer_read {
  	unsigned int resolution;
-@@ -809,11 +919,15 @@
+@@ -809,11 +919,15 @@ enum {
  	SNDRV_TIMER_EVENT_MRESUME = SNDRV_TIMER_EVENT_RESUME + 10,
  };
  
@@ -277,7 +278,7 @@ diff -ur linux-4.19.284.orig/include/uapi/sound/asound.h linux-4.19.284/include/
  
  /****************************************************************************
   *                                                                          *
-@@ -954,8 +1068,7 @@
+@@ -954,8 +1068,7 @@ struct snd_ctl_elem_value {
  		} bytes;
  		struct snd_aes_iec958 iec958;
  	} value;		/* RO */

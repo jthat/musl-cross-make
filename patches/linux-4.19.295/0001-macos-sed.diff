@@ -1,7 +1,8 @@
-diff -u -r linux-4.19.284.orig/scripts/headers_install.sh linux-4.19.284/scripts/headers_install.sh
---- linux-4.19.284.orig/scripts/headers_install.sh	2023-05-30 21:42:15.000000000 +1000
-+++ linux-4.19.284/scripts/headers_install.sh	2023-06-16 21:06:50.384758442 +1000
-@@ -34,7 +34,7 @@
+Index: b/scripts/headers_install.sh
+===================================================================
+--- a/scripts/headers_install.sh
++++ b/scripts/headers_install.sh
+@@ -34,7 +34,7 @@ do
  	sed -E \
  		-e 's/([[:space:](])(__user|__force|__iomem)[[:space:]]/\1/g' \
  		-e 's/__attribute_const__([[:space:]]|$)/\1/g' \
