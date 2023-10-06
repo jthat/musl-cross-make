@@ -33,10 +33,10 @@ REL_TOP = ../..$(if $(TARGET),/..)
 
 MUSL_VER ?= 1.2.4
 LINUX_VER ?= 4.19.295
-CONFIG_SUB_REV ?= 28ea239c53a2
 
 ifeq ($(COMPILER),gcc)
 
+CONFIG_SUB_REV ?= 28ea239c53a2
 BINUTILS_VER ?= 2.41
 GCC_VER ?= 13.2.0
 GMP_VER ?= 6.3.0
@@ -150,13 +150,15 @@ musl-git-%:
 	mv $@.tmp/$(patsubst %.orig,%,$@) $@
 	rm -rf $@.tmp
 
-%: %.orig | $(SOURCES)/config.sub
+%: %.orig | $(ifneq ($(CONFIG_SUB_REV),),$(SOURCES)/config.sub,)
 	case "$@" in */*) exit 1 ;; esac
 	rm -rf $@.tmp
 	mkdir $@.tmp
 	( cd $@.tmp && $(COWPATCH) -I ../$< )
 	test ! -d patches/$@ || cat patches/$@/* | ( cd $@.tmp && $(COWPATCH) -p1 )
+ifneq ($(CONFIG_SUB_REV),)
 	if test -f $</configfsf.sub ; then cs=configfsf.sub ; elif test -f $</config.sub ; then cs=config.sub ; else exit 0 ; fi ; rm -f $@.tmp/$$cs && cp -f $(SOURCES)/config.sub $@.tmp/$$cs && chmod +x $@.tmp/$$cs
+endif
 	rm -rf $@
 	mv $@.tmp $@
 
