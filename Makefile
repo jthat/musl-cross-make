@@ -150,7 +150,7 @@ musl-git-%:
 	mv $@.tmp/$(patsubst %.orig,%,$@) $@
 	rm -rf $@.tmp
 
-%: %.orig | $(ifneq ($(CONFIG_SUB_REV),),$(SOURCES)/config.sub,)
+%: %.orig | $(if $(CONFIG_SUB_REV),$(SOURCES)/config.sub)
 	case "$@" in */*) exit 1 ;; esac
 	rm -rf $@.tmp
 	mkdir $@.tmp
