@@ -32,22 +32,22 @@ REL_TOP = ../..$(if $(TARGET),/..)
 -include config.mak
 
 MUSL_VER ?= 1.2.5
-LINUX_VER ?= 4.19.308
+LINUX_VER ?= 4.19.325
 
 ifeq ($(COMPILER),gcc)
 
-CONFIG_SUB_REV ?= 948ae97ca570
-BINUTILS_VER ?= 2.42
-GCC_VER ?= 13.2.0
+CONFIG_SUB_REV ?= 00b159274960
+BINUTILS_VER ?= 2.44
+GCC_VER ?= 15.1.0
 GMP_VER ?= 6.3.0
 MPC_VER ?= 1.3.1
-MPFR_VER ?= 4.2.1
+MPFR_VER ?= 4.2.2
 
 endif
 
 ifeq ($(COMPILER),clang)
 
-LLVM_VER ?= 17.0.6
+LLVM_VER ?= 20.1.5
 
 endif
 
